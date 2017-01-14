@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+</head>
+<body>
+    <div id="app">LOADING&hellip;</div>
+</body>
+<script type="application/javascript" src="/elm.js"></script>
+<script type="application/javascript">
+var container = document.getElementById("app")
+container.innerHTML = ""  // clear loading placeholder
+var app = Elm.Main.embed(container)
+app.ports.alert.subscribe((reverse)=> alert(reverse))
+
+</script>
+</html>

@@ -1,0 +1,19 @@
+# Elm
+/elm-stuff
+
+# Node
+node_modules/
+
+
+# Logs
+/logs
+*.log
+
+# Editors
+*.sw[po]
+
+# Dist
+dist/*
+!dist/index.html
+
+# OS generated files
