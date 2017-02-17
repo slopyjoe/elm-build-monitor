@@ -5,6 +5,55 @@ import Html.Events exposing (onInput)
 import Html.Attributes as Attr exposing (..)
 import Return exposing (Return)
 import Time exposing (Time)
+import Http
+import Json.Decode exposing (succeed, Decoder, map, string, field, list, at, decodeString)
+import Json.Decode.Extra exposing ((|:))
+
+
+testJobsReturn : String
+testJobsReturn =
+    """
+    {
+      "jobs" : [
+        {
+          "name" : "job1"
+        },
+        {
+          "name" : "wtf it works"
+        }
+      ]
+    }
+  """
+
+
+type alias Job =
+    { name : String }
+
+
+jobDecoder : Decoder Job
+jobDecoder =
+    succeed Job
+        |: (field "name" string)
+
+
+parseJobs : Decoder (List Job)
+parseJobs =
+    at [ "jobs" ] (Json.Decode.list jobDecoder)
+
+
+listJobs : Result String (List Job)
+listJobs =
+    decodeString parseJobs testJobsReturn
+
+
+
+-- getJenkins : Cmd Msg
+-- getJenkins =
+--     let
+--         url =
+--             "https://jenkins.athndev.org/api/json"
+--     in
+--         Http.send NewText (Http.get url)
 
 
 type alias Model =
@@ -23,6 +72,17 @@ initModel =
 type Msg
     = NewText String
     | Tick Time
+
+
+emptyJob : List Job
+emptyJob =
+    [ { name = "hi" } ]
+
+
+renderJobs : Result String (List Job) -> Html Msg
+renderJobs jobs =
+    ul []
+        (List.map (\job -> li [] [ text job.name ]) (Result.withDefault emptyJob jobs))
 
 
 {-| Msg -> Model -> (Model, Cmd Msg)
@@ -49,10 +109,11 @@ update msg =
 view : Model -> Html Msg
 view { reverse, now } =
     div []
-        [ p [] [text "hello"]
+        [ p [] [ text "hello" ]
         , input [ type_ "text", placeholder "Enter some stuff", value reverse, onInput NewText ] []
         , text <| String.reverse reverse
         , div [] [ text <| toString now ]
+        , div [] [ (renderJobs listJobs) ]
         ]
 
 
