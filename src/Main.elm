@@ -6,8 +6,9 @@ import Html.Attributes as Attr exposing (..)
 import Return exposing (Return)
 import Time exposing (Time)
 import Http
-import Json.Decode exposing (succeed, Decoder, map, string, field, list, at, decodeString)
-import Json.Decode.Extra exposing ((|:))
+import Json.Decode exposing (decodeString)
+import Jenkins.Jobs.Types exposing (..)
+import Jenkins.Jobs.Json exposing (..)
 
 
 testJobsReturn : String
@@ -24,21 +25,6 @@ testJobsReturn =
       ]
     }
   """
-
-
-type alias Job =
-    { name : String }
-
-
-jobDecoder : Decoder Job
-jobDecoder =
-    succeed Job
-        |: (field "name" string)
-
-
-parseJobs : Decoder (List Job)
-parseJobs =
-    at [ "jobs" ] (Json.Decode.list jobDecoder)
 
 
 listJobs : Result String (List Job)
